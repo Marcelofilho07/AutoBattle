@@ -1,23 +1,17 @@
 #include "Grid.h"
+#include "GridNode.h"
 #include "Types.h"
+#include <iostream>
 
+
+Grid::Grid()
+{
+    GridRoot = nullptr;
+}
 
 Grid::Grid(int Lines, int Columns)
 {
-    xLenght = Lines;
-    yLength = Columns;
-    //Console.WriteLine("The battle field has been created\n");
-    for (int i = 0; i < Lines; i++)
-    {
 
-        for (int j = 0; j < Columns; j++)
-        {
-            Types::GridBox* newBox = new Types::GridBox(i, j, false, (Columns * i + j));
-            grids.insert(grids.end(), newBox);
-            //Console.Write($"{newBox.Index}\n");
-        }
-    }
-	//drawBattlefield(Lines, Columns);
 }
 
 Grid::~Grid() 
@@ -25,24 +19,69 @@ Grid::~Grid()
 
 }
 
-void Grid::drawBattlefield(int Lines, int Columns)
+void Grid::PopulateGrid(const int InX, const int InY)
 {
-    for (int i = 0; i < Lines; i++)
+    GridNode** GridTest = new GridNode*[InX];
+
+    for (int i = 0; i < InX; i++)
     {
-        for (int j = 0; j < Columns; j++)
+        GridTest[i] = new GridNode[InY];
+        for (int j = 0; j < InY; j++)
         {
-            Types::GridBox* currentgrid = new Types::GridBox();
-            if (currentgrid->ocupied)
+            GridTest[i][j] = GridNode(i, j);
+        }
+    }
+
+    for (int i = 0; i < InX; i++)
+    {
+        for (int j = 0; j < InY; j++)
+        {
+            if (j != 0)
             {
-                //if()
-                printf("[X]\t");
+                GridTest[i][j].SetUpNode(&GridTest[i][(j - 1)]);
             }
-            else
+            if (j < (InY - 1))
             {
-                printf("[ ]\t");
+                GridTest[i][j].SetDownNode(&GridTest[i][j + 1]);
+            }
+            if (i != 0)
+            {
+                GridTest[i][j].SetLeftNode(&GridTest[i - 1][j]);
+            }
+            if (i < (InX - 1))
+            {
+                GridTest[i][j].SetRightNode(&GridTest[i + 1][ j]);
             }
         }
-        printf("\n");
     }
-    printf("\n");
+    if (&GridTest[0][0] != nullptr)
+    {
+        GridRoot = &GridTest[0][0];
+    }
+}
+
+void Grid::DrawGrid()
+{
+    GridNode* n = GridRoot;
+    GridNode* RowFirst = GridRoot;
+    while (n != nullptr)
+    {
+        std::cout << "[" << n->GetNodePosition().x << ", " << n->GetNodePosition().y << "] ";
+
+        if (n->GetRightNode() != nullptr)
+        {
+            n = n->GetRightNode();
+        }
+        else if (RowFirst->GetDownNode() != nullptr)
+        {
+            std::cout << std::endl;
+            n = RowFirst->GetDownNode();
+            RowFirst = RowFirst->GetDownNode();
+        }
+        else
+        {
+            std::cout << std::endl;
+            n = nullptr;
+        }
+    }
 }

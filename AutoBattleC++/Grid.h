@@ -2,20 +2,22 @@
 #include <Vector>
 #include "Types.h"
 
+class GridNode;
+
 class Grid
 {
+private:
+    GridNode* GridRoot = nullptr;
 
 public:
 
+    Grid();
     Grid(int Lines, int Columns);
     ~Grid();
-
-    std::vector<Types::GridBox> grids;
-
-    int xLenght;
-    int yLength;
     
+    void PopulateGrid(int SizeX, int SizeY);
+
     // prints the matrix that indicates the tiles of the battlefield
-    void drawBattlefield(int Lines, int Columns);
+    void DrawGrid();
 };
 

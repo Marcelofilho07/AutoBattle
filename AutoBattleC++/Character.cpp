@@ -6,16 +6,17 @@
 #include <algorithm>
 
 using namespace std;
-Character::Character(Types::CharacterClass charcaterClass)
-{
-
-}
 
 Character::~Character() 
 {
 
 }
 
+Character::Character(float Health, const float BaseDamage, float DamageMultiplier, Types::CharacterClass charcaterClass)
+{
+
+}
+/*
 bool Character::TakeDamage(float amount) 
 {
 	if ((Health -= BaseDamage) <= 0) 
@@ -118,4 +119,4 @@ void Character::Attack(Character* target)
 {
 
 }
-
+*/

@@ -5,8 +5,8 @@
 
 int main()
 {
-    BattleField* battleField = new(BattleField);
-    battleField->Setup();
+    BattleField MainBattleField = BattleField();
+    MainBattleField.Setup();
 }
 
 

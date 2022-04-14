@@ -50,8 +50,21 @@ void GridNode::SetCharacter(Character* Char)
 	}
 }
 
+void GridNode::ClearNode()
+{
+	if (this != nullptr)
+	{
+		CharacterInNode = nullptr;
+	}
+}
+
 bool GridNode::IsNodeOccupied()
 {
+	if (this == nullptr)
+	{
+		return false;
+	}
+
 	if (CharacterInNode != nullptr)
 	{
 		return true;

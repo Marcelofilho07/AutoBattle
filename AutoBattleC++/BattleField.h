@@ -8,18 +8,15 @@ class Character;
 
 class Types;
 
-class LinkedList;
-
 class BattleField
 {
 public:
 
 	BattleField();
 
-	Grid* GameGrid;
-	LinkedList* AllPlayers;
-	LinkedList* TeamAPlayers;
-	LinkedList* TeamBPlayers;
+	Grid* GameGrid = nullptr;
+	Character* TeamAPlayer = nullptr;
+	Character* TeamBPlayer = nullptr;
 
 	int Turn;
 

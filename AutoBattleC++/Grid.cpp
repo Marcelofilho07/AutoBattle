@@ -1,5 +1,6 @@
 #include "Grid.h"
 #include "GridNode.h"
+#include "Character.h"
 #include "Types.h"
 #include <iostream>
 
@@ -66,7 +67,14 @@ void Grid::DrawGrid()
     GridNode* RowFirst = GridRoot;
     while (n != nullptr)
     {
-        std::cout << "[" << n->GetNodePosition().x << ", " << n->GetNodePosition().y << "] ";
+        if (n->IsNodeOccupied())
+        {
+            std::cout << "[" << n->GetCharInNode()->GetIcon() << "] ";
+        }
+        else
+        {
+            std::cout << "[ " << "] ";
+        }
 
         if (n->GetRightNode() != nullptr)
         {

@@ -1,38 +1,57 @@
 #pragma once
-#include "Grid.h"
-#include "Character.h"
-#include "Types.h"
+
+class Types;
+
+class Grid;
 
 class Character
 {
 public:
-
     Character();
 
-    Character(float Health, const float BaseDamage, float DamageMultiplier, Types::CharacterClass CharClass);
+    Character(const float InHealth, const float InBaseDamage, const float InDamageMultiplier, const int InMovement, const char InIcon);
 
     ~Character();
 
+    void TakeDamage(const float InAmount);
+
+    void Die();
+
+    void Walk(int RightSteps, int UpSteps);
+
+    void ExecuteTurn();
+
+    bool CheckCloseToTarget();
+
+    void Attack();
+
+    void SetTarget(Character* NewTarget);
+
+    void SetPlayerPosition(GridNode* Node);
+
+    char GetIcon() { return Icon; }
+private:
+
+
+private:
+    int index;
+
+    int Movement;
+
     float Health;
+
     float BaseDamage;
+
     float DamageMultiplier;
 
     bool IsDead;
 
     char Icon;
 
-    bool TakeDamage(float amount);
+    char* Name;
 
-    void Die();
+    Character* Target;
 
-    void WalkTo(bool CanWalk);
-
-    void StartTurn(Grid* battlefield);
-
-    bool CheckCloseTargets(Grid* battlefield);
-
-    void Attack(Character* target);
-
-
+    GridNode* GridPosition;
 };
 

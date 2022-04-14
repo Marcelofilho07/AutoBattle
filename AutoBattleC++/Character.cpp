@@ -1,122 +1,130 @@
 #include "Grid.h"
+#include "GridNode.h"
 #include "Character.h"
 #include "Types.h"
 #include "Character.h"
 #include <vector>
 #include <algorithm>
 
-using namespace std;
-
-Character::~Character() 
+Character::Character()
 {
-
+    IsDead = false;
+    Health = 1.f;
+    BaseDamage = 0.f;
+    DamageMultiplier = 1.f;
 }
 
-Character::Character(float Health, const float BaseDamage, float DamageMultiplier, Types::CharacterClass charcaterClass)
+Character::Character(const float InHealth, const float InBaseDamage, const float InDamageMultiplier, const int InMovement, const char InIcon)
 {
-
+    IsDead = false;
+    Health = InHealth;
+    BaseDamage = InBaseDamage;
+    DamageMultiplier = InDamageMultiplier;
+    Movement = InMovement;
+    Icon = InIcon;
 }
-/*
-bool Character::TakeDamage(float amount) 
+
+Character::~Character() {}
+
+void Character::TakeDamage(const float InAmount) 
 {
-	if ((Health -= BaseDamage) <= 0) 
+    Health -= (InAmount * DamageMultiplier);
+	if (Health <= 0) 
 	{
 		Die();
-		return true;
 	}
-	return false;
 }
+
 
 void Character::Die() 
 {
-	// TODO >> kill
-	//TODO >> end the game?
+    IsDead = true;
 }
 
-void Character::WalkTo(bool CanWalk) 
+void Character::Walk(int RightSteps, int UpSteps) 
 {
-
-}
-
-
-
-void Character::StartTurn(Grid* battlefield) {
-
+    int Moves = Movement;
+    if (RightSteps > 0)
     {
-
-        if (CheckCloseTargets(battlefield))
+        for (int i = 0; i < RightSteps && Moves > 0; i++)
         {
-            Attack(Character::target);
-
-
-            return;
+            SetPlayerPosition(GridPosition->GetRightNode());
+            Moves--;
         }
-        else
-        {   // if there is no target close enough, calculates in wich direction this character should move to be closer to a possible target
-            
-            
-            if (currentBox.xIndex > target->currentBox.xIndex)
-            {
-                if(find(battlefield->grids.begin(), battlefield->grids.end(), currentBox.Index - 1) != battlefield->grids.end())
-                
-                {
-                    currentBox.ocupied = false;
-                    battlefield->grids[currentBox.Index] = currentBox;
+    }
+    else
+    {
+        for (int i = 0; i < -RightSteps && Moves > 0; i++)
+        {
+            SetPlayerPosition(GridPosition->GetLeftNode());
+            Moves--;
+        }
+    }
 
-                    currentBox = (battlefield->grids[currentBox.Index - 1]);
-                    currentBox.ocupied = true;
-                    battlefield->grids[currentBox.Index] = currentBox;
-                    //Console.WriteLine($"Player {PlayerIndex} walked left\n");
-                    battlefield->drawBattlefield(5, 5);
-
-                    return;
-                }
-            }
-            else if (currentBox.xIndex < target->currentBox.xIndex)
-            {
-                currentBox.ocupied = false;
-                battlefield->grids[currentBox.Index] = currentBox;
-                currentBox = (battlefield->grids[currentBox.Index + 1]);
-                return;
-                battlefield->grids[currentBox.Index] = currentBox;
-                //Console.WriteLine($"Player {PlayerIndex} walked right\n");
-                battlefield->drawBattlefield(5, 5);
-            }
-
-            if (currentBox.yIndex > target->currentBox.yIndex)
-            {
-                battlefield->drawBattlefield(5, 5);
-                currentBox.ocupied = false;
-                battlefield->grids[currentBox.Index] = currentBox;
-                currentBox = battlefield->grids[(currentBox.Index - battlefield->xLenght)];
-                currentBox.ocupied = true;
-                battlefield->grids[currentBox.Index] = currentBox;
-                //Console.WriteLine($"PlayerB {PlayerIndex} walked up\n");
-                return;
-            }
-            else if (currentBox.yIndex < target->currentBox.yIndex)
-            {
-                currentBox.ocupied = true;
-                battlefield->grids[currentBox.Index] = currentBox;
-                currentBox = battlefield->grids[currentBox.Index + battlefield->xLenght];
-                currentBox.ocupied = false;
-                battlefield->grids[currentBox.Index] = currentBox;
-                //Console.WriteLine($"Player {PlayerIndex} walked down\n");
-                battlefield->drawBattlefield(5, 5);
-
-                return;
-            }
+    if (UpSteps > 0)
+    {
+        for (int i = 0; i < UpSteps && Moves > 0; i++)
+        {
+            SetPlayerPosition(GridPosition->GetUpNode());
+            Moves--;
+        }
+    }
+    else
+    {
+        for (int i = 0; i < -UpSteps && Moves > 0; i++)
+        {
+            SetPlayerPosition(GridPosition->GetDownNode());
+            Moves--;
         }
     }
 }
 
-bool Character::CheckCloseTargets(Grid* battlefield)
+void Character::SetPlayerPosition(GridNode* Node)
 {
-
+    if (Node != NULL && !Node->IsNodeOccupied())
+    {
+        GridPosition->ClearNode();
+        GridPosition = Node;
+        Node->SetCharacter(this);
+    }
 }
 
-void Character::Attack(Character* target) 
-{
 
+
+void Character::ExecuteTurn()
+{
+    if (CheckCloseToTarget())
+    {
+        Attack();
+    }
+    else
+    {
+        Walk(Target->GridPosition->GetNodePosition().x - GridPosition->GetNodePosition().x, GridPosition->GetNodePosition().y - Target->GridPosition->GetNodePosition().y);
+    }
+
+    if (CheckCloseToTarget())
+    {
+        Attack();
+    }
 }
-*/
+
+bool Character::CheckCloseToTarget()
+{
+    if (GridPosition->GetUpNode()->IsNodeOccupied() || GridPosition->GetDownNode()->IsNodeOccupied() || GridPosition->GetRightNode()->IsNodeOccupied() || GridPosition->GetLeftNode()->IsNodeOccupied())
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void Character::Attack() 
+{
+    Target->TakeDamage(BaseDamage);
+}
+
+void Character::SetTarget(Character* NewTarget)
+{
+    Target = NewTarget;
+}
+

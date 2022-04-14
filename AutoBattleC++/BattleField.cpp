@@ -1,4 +1,5 @@
 #include "Grid.h"
+#include "GridNode.h"
 #include "BattleField.h"
 #include "Types.h"
 #include "Character.h"
@@ -16,6 +17,10 @@ void BattleField::Setup()
     CreateGrid(GameGrid);
     CreateTeamACharacter();
     CreateTeamBCharacter();
+    TeamAPlayer->SetPlayerPosition(GameGrid->GetRoot());
+    TeamBPlayer->SetPlayerPosition(GameGrid->GetRoot()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode());
+    TeamAPlayer->SetTarget(TeamBPlayer);
+    TeamBPlayer->SetTarget(TeamAPlayer);
     StartGame();
 }
 
@@ -26,32 +31,28 @@ void BattleField::CreateGrid(Grid* OutGrid)
 
 void BattleField::CreateTeamACharacter()
 {
-    int Choice;
+   /* int Choice;
 
     std::cout << "Choose between one of these classes" << std::endl;
 
     std::cout << "[1] Paladin, [2] Warrior, [3] Cleric, [4] Archer" << std::endl;
 
-    std::cin >> Choice;
-
-    //Types::CharacterClass* NewCharacterClass = (Types::CharacterClass*)Choice;
-    //std::cout << "Player Class Choice: " << NewCharacterClass << std::endl;;
+    std::cin >> Choice;*/
     
     /*
     * TODO:::
     I'll need to create a Character Constructor and add it to the TeamA LinkedList
     */
+    TeamAPlayer = new Character(100.f, 21.f, 0.4f, 2, 'L');
 }
 
 void BattleField::CreateTeamBCharacter()
 {
-    Types::CharacterClass NewCharacterClass = (Types::CharacterClass)1; // ADD RANDOM NUM GENERATOR
-    std::cout << "Enemy Class Choice: " << NewCharacterClass << std::endl;
-
     /*
     * TODO:::
     I'll need to create a Character Constructor and add it to the TeamB LinkedList
     */
+    TeamBPlayer = new Character(100.f, 20.f, 0.4f, 2, 'B');
 }
 
 void BattleField::StartGame()
@@ -66,12 +67,11 @@ void BattleField::StartGame()
 
 bool BattleField::HandleTurn()
 {
-    while(true)
-    {
-        //GO THROUGH ALL PLAYERS LINKED LIST AND MAKE THEN DO THEIR ACTIONS
-        std::cout << "Click on any key to start the next turn..." << std::endl;
-        std::cin;
-        return false;
-    }
+    char WaitInput;
+    TeamAPlayer->ExecuteTurn();
+    TeamBPlayer->ExecuteTurn();
+    std::cout << "Click on any key to start the next turn..." << std::endl;
+    std::cin >> WaitInput;
+
     return true;
 }

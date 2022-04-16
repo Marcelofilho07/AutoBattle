@@ -1,24 +1,26 @@
 #include "Grid.h"
 #include "GridNode.h"
 #include "BattleField.h"
-#include "Types.h"
 #include "Character.h"
 #include <iostream>
-#include <list>
 
 BattleField::BattleField()
 {
-    Turn = 0;
+    NumberOfPlayers = 0;
     GameGrid = new Grid();
+    TeamAPlayer = new Character();
+    TeamBPlayer = new Character();
 }
 
 void BattleField::Setup()
 {
     CreateGrid(GameGrid);
-    CreateTeamACharacter();
-    CreateTeamBCharacter();
+    std::cout << "Set First Player Stats: " << std::endl;
+    CreateCharacter(TeamAPlayer);
+    std::cout << "Set Second Player Stats: " << std::endl;
+    CreateCharacter(TeamBPlayer);
     TeamAPlayer->SetPlayerPosition(GameGrid->GetRoot());
-    TeamBPlayer->SetPlayerPosition(GameGrid->GetRoot()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetRightNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode()->GetDownNode());
+    TeamBPlayer->SetPlayerPosition(GameGrid->GetTail());
     TeamAPlayer->SetTarget(TeamBPlayer);
     TeamBPlayer->SetTarget(TeamAPlayer);
     StartGame();
@@ -26,51 +28,177 @@ void BattleField::Setup()
 
 void BattleField::CreateGrid(Grid* OutGrid)
 {
-    OutGrid->PopulateGrid(15, 15);
+    int X;
+    int Y;
+
+    std::cout << "Set Grid Lenght: " << std::endl;
+
+    std::cin >> X;    
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> X;
+    }
+
+    std::cout << "Set Grid Height: " << std::endl;
+
+    std::cin >> Y;    
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Y;
+    }
+
+    if ((X <= 1 && Y <= 1) || (X == 0 || Y == 0))
+    {
+        std::cout << "Invalid Height or Lenght. Try again" << std::endl;
+        CreateGrid(OutGrid);
+    }
+    else
+    {
+        OutGrid->PopulateGrid(X, Y);
+    }
 }
 
-void BattleField::CreateTeamACharacter()
+void BattleField::CreateCharacter(Character* NewChar)
 {
-   /* int Choice;
+    float Health;
+    float Damage;
+    float DamageMultiplier;
+    int Movements;
+    char Icon;
 
-    std::cout << "Choose between one of these classes" << std::endl;
+    std::cout << "Set new Player Health: " << std::endl;
 
-    std::cout << "[1] Paladin, [2] Warrior, [3] Cleric, [4] Archer" << std::endl;
-
-    std::cin >> Choice;*/
+    std::cin >> Health;
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Health;
+    }
     
-    /*
-    * TODO:::
-    I'll need to create a Character Constructor and add it to the TeamA LinkedList
-    */
-    TeamAPlayer = new Character(100.f, 21.f, 0.4f, 2, 'L');
-}
 
-void BattleField::CreateTeamBCharacter()
-{
-    /*
-    * TODO:::
-    I'll need to create a Character Constructor and add it to the TeamB LinkedList
-    */
-    TeamBPlayer = new Character(100.f, 20.f, 0.4f, 2, 'B');
+    std::cout << "Set new Player Damage: " << std::endl;
+
+    std::cin >> Damage;
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Damage;
+    }
+
+    std::cout << "Set new Player Damage Multiplier: " << std::endl;
+
+    std::cin >> DamageMultiplier;
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> DamageMultiplier;
+    }
+
+    std::cout << "Set new Player number of Movements: " << std::endl;
+
+    std::cin >> Movements;
+
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Movements;
+    }
+
+    std::cout << "Set new Player Icon: " << std::endl;
+
+    std::cin >> Icon;
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a single letter" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Icon;
+    }
+    
+    NewChar->SetHealth(Health);
+    NewChar->SetBaseDamage(Damage);
+    NewChar->SetDamageMultiplier(DamageMultiplier);
+    NewChar->SetMovement(Movements);
+    NewChar->SetIconAndName(Icon);
+    NumberOfPlayers++;
+    NewChar->SetIndex(NumberOfPlayers);
+
+    std::cout << "Player Created!" << std::endl << std::endl;
 }
 
 void BattleField::StartGame()
 {
+    GameGrid->DrawGrid();
     bool IsRunning = true;
+
+    char WaitInput;
+    std::cout << "Enter any key to start the round..." << std::endl;
+    std::cin >> WaitInput;
+
     while (IsRunning)
     {
-        GameGrid->DrawGrid();
         IsRunning = HandleTurn();
+    }
+
+    if (TeamAPlayer->GetIsDead())
+    {
+        std::cout << "Second Player WINS!" << std::endl;
+    }
+    else
+    {
+        std::cout << "First Player WINS!" << std::endl;
+    }
+
+    int Choice;
+    std::cout << "Do you want to start a new game? Yes - 1 / No - 0" << std::endl;
+    std::cin >> Choice;    
+
+    while (std::cin.fail()) 
+    {
+        std::cout << "Please input a number" << std::endl;
+        std::cin.clear();
+        std::cin.ignore(256, '\n');
+        std::cin >> Choice;
+    }
+
+    if (Choice)
+    {
+        Setup();
     }
 }
 
 bool BattleField::HandleTurn()
 {
     char WaitInput;
+    if (TeamAPlayer->GetIsDead())
+    {
+        return false;
+    }
     TeamAPlayer->ExecuteTurn();
+    GameGrid->DrawGrid();
+    std::cout << "Enter any key to start the next turn..." << std::endl;
+    std::cin >> WaitInput;
+    if (TeamBPlayer->GetIsDead())
+    {
+        return false;
+    }
     TeamBPlayer->ExecuteTurn();
-    std::cout << "Click on any key to start the next turn..." << std::endl;
+    GameGrid->DrawGrid();
+    std::cout << "Enter any key to start the next turn..." << std::endl;
     std::cin >> WaitInput;
 
     return true;

@@ -1,18 +1,13 @@
 #include "Grid.h"
 #include "GridNode.h"
 #include "Character.h"
-#include "Types.h"
 #include <iostream>
 
 
 Grid::Grid()
 {
-    GridRoot = nullptr;
-}
-
-Grid::Grid(int Lines, int Columns)
-{
-
+    GridRoot = nullptr; 
+    GridTail = nullptr;
 }
 
 Grid::~Grid() 
@@ -22,14 +17,14 @@ Grid::~Grid()
 
 void Grid::PopulateGrid(const int InX, const int InY)
 {
-    GridNode** GridTest = new GridNode*[InX];
+    GridNode** NewGrid = new GridNode*[InX];
 
     for (int i = 0; i < InX; i++)
     {
-        GridTest[i] = new GridNode[InY];
+        NewGrid[i] = new GridNode[InY];
         for (int j = 0; j < InY; j++)
         {
-            GridTest[i][j] = GridNode(i, j);
+            NewGrid[i][j] = GridNode(i, j);
         }
     }
 
@@ -39,25 +34,29 @@ void Grid::PopulateGrid(const int InX, const int InY)
         {
             if (j != 0)
             {
-                GridTest[i][j].SetUpNode(&GridTest[i][(j - 1)]);
+                NewGrid[i][j].SetUpNode(&NewGrid[i][(j - 1)]);
             }
             if (j < (InY - 1))
             {
-                GridTest[i][j].SetDownNode(&GridTest[i][j + 1]);
+                NewGrid[i][j].SetDownNode(&NewGrid[i][j + 1]);
             }
             if (i != 0)
             {
-                GridTest[i][j].SetLeftNode(&GridTest[i - 1][j]);
+                NewGrid[i][j].SetLeftNode(&NewGrid[i - 1][j]);
             }
             if (i < (InX - 1))
             {
-                GridTest[i][j].SetRightNode(&GridTest[i + 1][ j]);
+                NewGrid[i][j].SetRightNode(&NewGrid[i + 1][ j]);
             }
         }
     }
-    if (&GridTest[0][0] != nullptr)
+    if (&NewGrid[0][0] != nullptr)
     {
-        GridRoot = &GridTest[0][0];
+        GridRoot = &NewGrid[0][0];
+    }
+    if (&NewGrid[InX - 1][InY - 1] != nullptr)
+    {
+        GridTail = &NewGrid[InX - 1][InY - 1];
     }
 }
 
@@ -69,7 +68,14 @@ void Grid::DrawGrid()
     {
         if (n->IsNodeOccupied())
         {
-            std::cout << "[" << n->GetCharInNode()->GetIcon() << "] ";
+            if (n->GetCharInNode()->GetIsDead())
+            {
+                std::cout << "[" << "X" << "] ";
+            }
+            else
+            {
+                std::cout << "[" << n->GetCharInNode()->GetIcon() << "] ";
+            }
         }
         else
         {
@@ -92,4 +98,5 @@ void Grid::DrawGrid()
             n = nullptr;
         }
     }
+    std::cout << "---------------------------------------------------------------- " << std::endl;
 }

@@ -1,34 +1,73 @@
 #include "Grid.h"
 #include "GridNode.h"
 #include "Character.h"
-#include "Types.h"
-#include "Character.h"
-#include <vector>
-#include <algorithm>
 
 Character::Character()
 {
     IsDead = false;
     Health = 1.f;
+    MaxHealth = Health;
     BaseDamage = 0.f;
     DamageMultiplier = 1.f;
-}
-
-Character::Character(const float InHealth, const float InBaseDamage, const float InDamageMultiplier, const int InMovement, const char InIcon)
-{
-    IsDead = false;
-    Health = InHealth;
-    BaseDamage = InBaseDamage;
-    DamageMultiplier = InDamageMultiplier;
-    Movement = InMovement;
-    Icon = InIcon;
+    EmpowerCharges = 1;
+    Movement = 0;
+    InvulnerabilityCharges = 1;
+    Target = nullptr;
+    IsInvulnerable = false;
+    Name = '0';
+    IsEmpower = false;
+    Index = 0;
+    Icon = '0';
+    GridPosition = nullptr;
 }
 
 Character::~Character() {}
 
+void Character::SetHealth(const float InHealth)
+{
+    MaxHealth = InHealth;
+    Health = InHealth;
+}
+
+void Character::SetBaseDamage(const float InBaseDamage)
+{
+    BaseDamage = InBaseDamage;
+}
+
+void Character::SetDamageMultiplier(const float InDamageMultiplier)
+{
+    DamageMultiplier = InDamageMultiplier;
+}
+
+void Character::SetMovement(const int InMovement)
+{
+    Movement = InMovement;
+}
+
+void Character::SetIconAndName(const char InIcon)
+{
+    Icon = InIcon;
+    Name = InIcon;
+}
+
 void Character::TakeDamage(const float InAmount) 
 {
-    Health -= (InAmount * DamageMultiplier);
+    if (!IsInvulnerable)
+    {
+        Health -= (InAmount * DamageMultiplier);
+    }
+    else
+    {
+        IsInvulnerable = false;
+        InvulnerabilityCharges--;
+    }
+
+    if (Health * 2 <= MaxHealth)
+    {
+        Invulnerable();
+        Empower();
+    }
+
 	if (Health <= 0) 
 	{
 		Die();
@@ -81,7 +120,7 @@ void Character::Walk(int RightSteps, int UpSteps)
 
 void Character::SetPlayerPosition(GridNode* Node)
 {
-    if (Node != NULL && !Node->IsNodeOccupied())
+    if (Node != nullptr && !Node->IsNodeOccupied())
     {
         GridPosition->ClearNode();
         GridPosition = Node;
@@ -89,22 +128,45 @@ void Character::SetPlayerPosition(GridNode* Node)
     }
 }
 
+void Character::SetIndex(const int InIndex)
+{
+    Index = InIndex;
+}
+
+void Character::Empower()
+{
+    if (EmpowerCharges)
+    {
+        IsEmpower = true;
+    }
+}
+
+void Character::Invulnerable()
+{
+    if (InvulnerabilityCharges)
+    {
+        IsInvulnerable = true;
+    }
+}
 
 
 void Character::ExecuteTurn()
 {
-    if (CheckCloseToTarget())
+    if (!IsDead)
     {
-        Attack();
-    }
-    else
-    {
-        Walk(Target->GridPosition->GetNodePosition().x - GridPosition->GetNodePosition().x, GridPosition->GetNodePosition().y - Target->GridPosition->GetNodePosition().y);
-    }
+        if (CheckCloseToTarget())
+        {
+            Attack();
+        }
+        else
+        {
+            Walk(Target->GridPosition->GetNodePosition().x - GridPosition->GetNodePosition().x, GridPosition->GetNodePosition().y - Target->GridPosition->GetNodePosition().y);
+        }
 
-    if (CheckCloseToTarget())
-    {
-        Attack();
+        if (CheckCloseToTarget())
+        {
+            Attack();
+        }
     }
 }
 
@@ -120,7 +182,16 @@ bool Character::CheckCloseToTarget()
 
 void Character::Attack() 
 {
-    Target->TakeDamage(BaseDamage);
+    if (IsEmpower)
+    {
+        Target->TakeDamage(BaseDamage * 2);
+        IsEmpower = false;
+        EmpowerCharges--;
+    }
+    else
+    {
+        Target->TakeDamage(BaseDamage);
+    }
 }
 
 void Character::SetTarget(Character* NewTarget)

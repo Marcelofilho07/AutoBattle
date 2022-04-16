@@ -6,39 +6,14 @@ class Grid;
 
 class Character
 {
-public:
-    Character();
-
-    Character(const float InHealth, const float InBaseDamage, const float InDamageMultiplier, const int InMovement, const char InIcon);
-
-    ~Character();
-
-    void TakeDamage(const float InAmount);
-
-    void Die();
-
-    void Walk(int RightSteps, int UpSteps);
-
-    void ExecuteTurn();
-
-    bool CheckCloseToTarget();
-
-    void Attack();
-
-    void SetTarget(Character* NewTarget);
-
-    void SetPlayerPosition(GridNode* Node);
-
-    char GetIcon() { return Icon; }
 private:
-
-
-private:
-    int index;
+    int Index;
 
     int Movement;
 
     float Health;
+
+    float MaxHealth;
 
     float BaseDamage;
 
@@ -46,12 +21,61 @@ private:
 
     bool IsDead;
 
+    bool IsInvulnerable;
+
+    bool IsEmpower;
+
+    int EmpowerCharges;
+
+    int InvulnerabilityCharges;
+
     char Icon;
 
-    char* Name;
+    char Name;
 
     Character* Target;
 
     GridNode* GridPosition;
+
+public:
+    Character();
+
+    ~Character();
+
+    void SetHealth(const float InHealth);
+
+    void SetBaseDamage(const float InBaseDamage);
+
+    void SetDamageMultiplier(const float InDamageMultiplier);
+
+    void SetMovement(const int InMovement);
+
+    void SetIconAndName(const char InIcon);
+
+    void SetTarget(Character* NewTarget);
+
+    void SetPlayerPosition(GridNode* Node);
+
+    void SetIndex(const int InIndex);
+
+    char GetIcon() { return Icon; }
+
+    bool GetIsDead() { return IsDead; }
+
+    void ExecuteTurn();
+private:
+    void TakeDamage(const float InAmount);
+
+    void Die();
+
+    void Walk(int RightSteps, int UpSteps);
+
+    bool CheckCloseToTarget();
+
+    void Attack();
+
+    void Empower();
+
+    void Invulnerable();
 };
 

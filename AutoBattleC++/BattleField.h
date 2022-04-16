@@ -1,6 +1,4 @@
 #pragma once
-#include <list>
-#include <iostream>
 
 class Grid;
 
@@ -10,23 +8,22 @@ class Types;
 
 class BattleField
 {
+private:
+	Grid* GameGrid = nullptr;
+	Character* TeamAPlayer = nullptr;
+	Character* TeamBPlayer = nullptr;
+	int NumberOfPlayers;
+
 public:
 
 	BattleField();
 
-	Grid* GameGrid = nullptr;
-	Character* TeamAPlayer = nullptr;
-	Character* TeamBPlayer = nullptr;
-
-	int Turn;
-
 	void Setup();
 
+private:
 	void CreateGrid(Grid* OutGrid);
 
-	void CreateTeamACharacter();
-
-	void CreateTeamBCharacter();
+	void CreateCharacter(Character* NewChar);
 
 	void StartGame();
 

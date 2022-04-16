@@ -22,24 +22,51 @@ No need to call setup inside class constructor;
 Fixed a variable name;(first letter was lowercase)
 Removed some blank spaces;
 Deleted "int numberOfPossibleTiles". Never used;
-We don't need to store our player choice in a string. He can input an integer;
-Switch case desnecessário. Todas escolhas levam para o mesmo caminho.
+No need for this switch case here.
 CreateEnemyCharacter() should not be inside CreatePlayerCharacter();
 StartGame() should not be inside CreateEnemyCharacter;
 Moved both those functions to Setup;
-I'm making a linked list to store characters;
-
-"void BattleField::AlocatePlayers()
-{
-    AlocatePlayerCharacter();
-}"
-This is unnaceptable;
 
 GetRandomInt(int min, int max) returning itself ad nausean was a great joke thanks.
 
 "EnemyCharacter->target = PlayerCharacter;
-PlayerCharacter->target = EnemyCharacter;" No need for this anymore
+PlayerCharacter->target = EnemyCharacter;"
+changed this for a SetTarget function;
 
 No reason for "StartTurn()";
 
 Removed all "AlocatePlayersFunction";
+
+Character.h:
+
+Changed a lot of variables.
+Changed a lot of functions.
+Removed includes.
+added Private and Public.
+
+Character.cpp:
+Removed namespace.
+Removed many includes.
+
+Die
+kill
+end the game?
+
+completed changed how StartTurn works
+
+Created a lot of new functions.
+
+Grid.h:
+
+removed includes.
+added private/public.
+changed variables
+changed functions.
+This one I did a lot of changes.
+
+Grid.cpp:
+redone almost everything at this point.
+
+Types.h and Types.cpp:
+Why do we have this?
+Just deleted both. We don't need classes. The document never said we need classes ;)

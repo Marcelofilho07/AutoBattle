@@ -9,6 +9,8 @@ private:
 
     GridNode* GridTail = nullptr;
 
+    GridNode** NewGrid = nullptr;
+
 public:
 
     Grid();
@@ -21,5 +23,7 @@ public:
     GridNode* GetTail() { return GridTail; }
 
     void DrawGrid();
+
+    void ClearGrid();
 };
 

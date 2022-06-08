@@ -10,6 +10,8 @@ GridNode::GridNode(const int InX, const int InY)
 	SetGridPosition(InX, InY);
 }
 
+GridNode::~GridNode() {}
+
 void GridNode::SetUpNode(GridNode* Node)
 {
 	if (Node != nullptr)

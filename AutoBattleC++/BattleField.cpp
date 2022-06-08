@@ -7,13 +7,13 @@
 BattleField::BattleField()
 {
     NumberOfPlayers = 0;
-    GameGrid = new Grid();
-    TeamAPlayer = new Character();
-    TeamBPlayer = new Character();
 }
 
 void BattleField::Setup()
 {
+    GameGrid = new Grid();
+    TeamAPlayer = new Character();
+    TeamBPlayer = new Character();
     CreateGrid(GameGrid);
     std::cout << "Set First Player Stats: " << std::endl;
     CreateCharacter(TeamAPlayer);
@@ -177,8 +177,15 @@ void BattleField::StartGame()
 
     if (Choice)
     {
+        ClearGame();
         Setup();
     }
+}
+
+void BattleField::ClearGame()
+{
+    delete GameGrid;
+    GameGrid = nullptr;
 }
 
 bool BattleField::HandleTurn()

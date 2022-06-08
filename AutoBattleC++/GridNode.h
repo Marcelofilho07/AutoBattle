@@ -5,8 +5,8 @@ class Character;
 struct Vector2D
 {
 public:
-    int x;
-    int y;
+    int x = 0;
+    int y = 0;
 };
 
 class GridNode
@@ -25,6 +25,8 @@ public:
     GridNode();
 
     GridNode(const int InX, const int InY);
+
+    ~GridNode();
 
     GridNode* GetUpNode() { return UpNode; }
 
@@ -48,7 +50,7 @@ public:
 
     void SetCharacter(Character* Char);
 
-    void SetGridPosition(const int InX, const int InY)
+    inline void SetGridPosition(const int InX, const int InY)
     {
         GridPosition.x = InX;
         GridPosition.y = InY;

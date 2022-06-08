@@ -27,6 +27,8 @@ private:
 
 	void StartGame();
 
+	void ClearGame();
+
 	bool HandleTurn();
 };
 

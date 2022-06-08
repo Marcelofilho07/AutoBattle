@@ -4,7 +4,6 @@
 
 Character::Character()
 {
-    IsDead = false;
     Health = 1.f;
     MaxHealth = Health;
     BaseDamage = 0.f;
@@ -21,7 +20,10 @@ Character::Character()
     GridPosition = nullptr;
 }
 
-Character::~Character() {}
+Character::~Character() 
+{
+    delete this;
+}
 
 void Character::SetHealth(const float InHealth)
 {
@@ -77,7 +79,7 @@ void Character::TakeDamage(const float InAmount)
 
 void Character::Die() 
 {
-    IsDead = true;
+    //IsDead = true;
 }
 
 void Character::Walk(int RightSteps, int UpSteps) 
@@ -152,7 +154,7 @@ void Character::Invulnerable()
 
 void Character::ExecuteTurn()
 {
-    if (!IsDead)
+    if (!GetIsDead())
     {
         if (CheckCloseToTarget())
         {

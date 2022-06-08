@@ -7,35 +7,33 @@ class Grid;
 class Character
 {
 private:
-    int Index;
+    int Index = -1;
 
-    int Movement;
+    int Movement = 0;
 
-    float Health;
+    float Health = 1.f;
 
-    float MaxHealth;
+    float MaxHealth = Health;
 
-    float BaseDamage;
+    float BaseDamage = 1.f;
 
-    float DamageMultiplier;
+    float DamageMultiplier = 1.f;
 
-    bool IsDead;
+    bool IsInvulnerable = false;
 
-    bool IsInvulnerable;
+    bool IsEmpower = false;
 
-    bool IsEmpower;
+    int EmpowerCharges = 0;
 
-    int EmpowerCharges;
+    int InvulnerabilityCharges = 0;
 
-    int InvulnerabilityCharges;
+    char Icon = '0';
 
-    char Icon;
+    char Name = '0';
 
-    char Name;
+    Character* Target = nullptr;
 
-    Character* Target;
-
-    GridNode* GridPosition;
+    GridNode* GridPosition = nullptr;
 
 public:
     Character();
@@ -58,11 +56,12 @@ public:
 
     void SetIndex(const int InIndex);
 
-    char GetIcon() { return Icon; }
+    inline char GetIcon() { return Icon; }
 
-    bool GetIsDead() { return IsDead; }
+    inline bool GetIsDead() { return Health > 0; }
 
     void ExecuteTurn();
+
 private:
     void TakeDamage(const float InAmount);
 

@@ -4,21 +4,16 @@
 #include <iostream>
 
 
-Grid::Grid()
-{
-    GridRoot = nullptr; 
-    GridTail = nullptr;
-}
+Grid::Grid() {}
 
 Grid::~Grid() 
 {
-
+    ClearGrid();
 }
 
 void Grid::PopulateGrid(const int InX, const int InY)
 {
-    GridNode** NewGrid = new GridNode*[InX];
-
+    NewGrid = new GridNode*[InX];
     for (int i = 0; i < InX; i++)
     {
         NewGrid[i] = new GridNode[InY];
@@ -27,6 +22,7 @@ void Grid::PopulateGrid(const int InX, const int InY)
             NewGrid[i][j] = GridNode(i, j);
         }
     }
+
 
     for (int i = 0; i < InX; i++)
     {
@@ -58,6 +54,8 @@ void Grid::PopulateGrid(const int InX, const int InY)
     {
         GridTail = &NewGrid[InX - 1][InY - 1];
     }
+
+
 }
 
 void Grid::DrawGrid()
@@ -99,4 +97,16 @@ void Grid::DrawGrid()
         }
     }
     std::cout << "---------------------------------------------------------------- " << std::endl;
+}
+
+void Grid::ClearGrid()
+{
+    for (int i = 0; i < 100; i++)
+    {
+        delete[] NewGrid[i];
+        NewGrid[i] = nullptr;
+    }
+
+    delete[] NewGrid;
+    NewGrid = nullptr;
 }
